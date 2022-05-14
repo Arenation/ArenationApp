@@ -11,8 +11,8 @@ class AppRoutes {
 
   void createRoutes() {
     _routes = {
-      '/home': (context) => Login(),
-      "/": (context) => Home(),
+      '/': (context) => Login(),
+      "/home": (context) => Home(),
     };
   }
 

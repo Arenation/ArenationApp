@@ -5,7 +5,14 @@ class Login extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text('Login'),
+        child: TextButton(
+          child: const Text(
+            'Login',
+          ),
+          onPressed: () {
+            Navigator.of(context).pushNamed("/home");
+          },
+        ),
       ),
     );
   }

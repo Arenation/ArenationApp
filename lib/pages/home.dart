@@ -1,3 +1,6 @@
+import 'package:arenation_app/utils/custom_colors.dart';
+import 'package:arenation_app/utils/text_theme.dart';
+import 'package:arenation_app/widgets/skeletons.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/http/arenas/getArenas.dart';
@@ -11,39 +14,84 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: CustomColors.secondaryWhite,
       appBar: AppBar(
-        title: Text("Arenas"),
+        backgroundColor: CustomColors.secondaryWhite,
+        elevation: 0,
+        title: Text("Arenation", style: CustomTextTheme.h2(context)),
       ),
       body: Consumer<GetArenas>(
-        builder: (context, getArenas, child) {
-          getArenas.setState(StateHttp.loading);
+        builder: (_context, getArenas, child) {
+          // getArenas.setState(StateHttp.loading);
           return Column(children: [
-            ListArenas(getArenas),
+            filterHeader(_context),
+            listArenas(context, getArenas),
           ]);
         },
       ),
     );
   }
 
-  Widget ListArenas(GetArenas arenas) {
+  Widget filterHeader(context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            "Encuentra tu Arena",
+            style: CustomTextTheme.h1(context),
+          ),
+          IconButton(
+            onPressed: null,
+            icon: Icon(
+              Icons.filter_alt_outlined,
+              color: CustomColors.secondaryDark,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget listArenas(BuildContext mainContext, GetArenas arenas) {
     DataResponseArenas data;
-    return Center(
+    return Expanded(
         child: arenas.state == StateHttp.error
-            ? Text("Error")
-            : FutureBuilder<Response>(
-                future: arenas.state == StateHttp.loading? arenas.getArenas():null,
-                builder:
-                    (BuildContext context, AsyncSnapshot<Response> snapshot) {
-                  if (snapshot.hasData) {
-                    data = snapshot.data!.getData as DataResponseArenas;
-                    for (var arena in data.data){
-                      return Text(arena.title);
-                    }
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return const CircularProgressIndicator();
-                },
+            ? const Text("Error")
+            : Padding(
+                padding: const EdgeInsets.fromLTRB(24, 24, 24, 24),
+                child: Column(
+                  children: [
+                    FutureBuilder<Response>(
+                      future: arenas.state == StateHttp.loading
+                          ? arenas.getArenas()
+                          : null,
+                      builder: (BuildContext context,
+                          AsyncSnapshot<Response> snapshot) {
+                        if (snapshot.hasData) {
+                          data = snapshot.data!.getData as DataResponseArenas;
+                          for (var arena in data.data) {
+                            return arenaCard(arena);
+                          }
+                        } else if (snapshot.hasError) {
+                          return Text("${snapshot.error}");
+                        }
+                        return skeletonCardArena(mainContext);
+                      },
+                    )
+                  ],
+                ),
               ));
+  }
+
+  Widget arenaCard(arena) {
+    return InkWell(
+        child: Container(
+      decoration: const BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(16.0))),
+      child: Column(),
+    ));
   }
 }
