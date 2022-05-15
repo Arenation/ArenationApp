@@ -8,7 +8,7 @@ class CustomButtonStyle {
         backgroundColor:
             MaterialStateProperty.all<Color?>(CustomColors.primary500),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          const EdgeInsets.fromLTRB(24, 16, 24, 16),
+          const EdgeInsets.fromLTRB(24, 24, 24, 24),
         ),
         minimumSize: fullWidth
             ? MaterialStateProperty.all<Size>(
@@ -24,7 +24,7 @@ class CustomButtonStyle {
     return ButtonStyle(
       backgroundColor: MaterialStateProperty.all<Color?>(Colors.transparent),
       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-        const EdgeInsets.fromLTRB(24, 16, 24, 16),
+        const EdgeInsets.fromLTRB(24, 24, 24, 24),
       ),
       minimumSize: fullWidth
           ? MaterialStateProperty.all<Size>(

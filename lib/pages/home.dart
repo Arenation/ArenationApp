@@ -24,7 +24,9 @@ class Home extends StatelessWidget {
         builder: (_context, getArenas, child) {
           return Column(children: [
             filterHeader(_context),
-            listArenas(context, getArenas),
+            Expanded(
+              child: listArenas(context, getArenas),
+            )
           ]);
         },
       ),

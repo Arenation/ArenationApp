@@ -5,7 +5,7 @@ import 'package:http/http.dart' as http;
 import '../../../models/response.dart';
 import '../../httpstate.dart';
 import '../../servicesconfig.dart';
-import '../httpbase.dart';
+import 'httpbase.dart';
 import '../../../models/arenas/modelArena.dart';
 
 class GetArenas extends HttpBase {

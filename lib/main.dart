@@ -1,12 +1,8 @@
-import 'package:arenation_app/utils/button_style.dart';
-import 'package:arenation_app/utils/custom_colors.dart';
-import 'package:arenation_app/utils/textfield_style.dart';
 import 'package:flutter/material.dart';
-import "package:arenation_app/utils/text_theme.dart";
 import 'package:provider/provider.dart';
 import '../services/approutes.dart';
 import '../services/http/arenas/getArenas.dart';
-import './models/arenas/modelArena.dart';
+import '../services/http/users/getUser.dart';
 
 void main() {
   runApp(const MyApp());
@@ -20,6 +16,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => GetArenas()),
+        ChangeNotifierProvider(create: (_) => GetUser())
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
@@ -27,7 +24,7 @@ class MyApp extends StatelessWidget {
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
-          initialRoute: '/home',
+          initialRoute: '/',
           routes: AppRoutes().getRoutes),
     );
   }
