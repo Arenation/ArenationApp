@@ -22,7 +22,6 @@ class Home extends StatelessWidget {
       ),
       body: Consumer<GetArenas>(
         builder: (_context, getArenas, child) {
-          // getArenas.setState(StateHttp.loading);
           return Column(children: [
             filterHeader(_context),
             listArenas(context, getArenas),
@@ -72,9 +71,12 @@ class Home extends StatelessWidget {
                           AsyncSnapshot<Response> snapshot) {
                         if (snapshot.hasData) {
                           data = snapshot.data!.getData as DataResponseArenas;
-                          for (var arena in data.data) {
-                            return arenaCard(arena);
-                          }
+                          return Column(
+                            children: [
+                              for (var item in data.data)
+                                Text(item.title),
+                            ],
+                          );
                         } else if (snapshot.hasError) {
                           return Text("${snapshot.error}");
                         }
@@ -86,12 +88,18 @@ class Home extends StatelessWidget {
               ));
   }
 
-  Widget arenaCard(arena) {
-    return InkWell(
-        child: Container(
-      decoration: const BoxDecoration(
-          borderRadius: BorderRadius.all(Radius.circular(16.0))),
-      child: Column(),
-    ));
+  Widget arenaCard({Arenas? arena}) {
+    if(arena != null) {
+      return Column(
+        children: [
+          Text(arena.description),
+        ]
+      );
+    }
+    return Column(
+      children: const [
+        Text("No hay Arenas"),
+      ]
+    );
   }
 }

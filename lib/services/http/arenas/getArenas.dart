@@ -10,7 +10,7 @@ import '../../../models/arenas/modelArena.dart';
 
 class GetArenas extends HttpBase {
   GetArenas() {
-    setState(StateHttp.init);
+    setState(StateHttp.loading);
   }
 
   @override
@@ -26,9 +26,6 @@ class GetArenas extends HttpBase {
       final Response _decodeResponse = decodeResponse(_response);
 
       _client.close();
-      print("REspues: ");
-      print(_decodeResponse);
-
       return _decodeResponse;
     } on SocketException catch (e) {
       setState(StateHttp.error);
