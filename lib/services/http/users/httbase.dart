@@ -5,9 +5,9 @@ import './httpstate.dart';
 abstract class HttpBase extends HttpState {
   Future<Response> login(String email, String password);
 
-  /* Future<Response> getArenasById(String id); 
+  Future<Response> register(Map<String, String> data); 
 
-  Future<Response> getUserById(String id);
+  /*Future<Response> getUserById(String id);
 
   Future<Response> login(String email, String password); */
 

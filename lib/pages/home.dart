@@ -66,18 +66,20 @@ class Home extends StatelessWidget {
                 child: Column(
                   children: [
                     FutureBuilder<Response>(
-                      future: arenas.state == StateHttp.loading
+                      future: arenas.state != StateHttp.error
                           ? arenas.getArenas()
                           : null,
                       builder: (BuildContext context,
                           AsyncSnapshot<Response> snapshot) {
                         if (snapshot.hasData) {
                           data = snapshot.data!.getData as DataResponseArenas;
-                          return Column(
-                            children: [
-                              for (var item in data.data)
-                                Text(item.title),
-                            ],
+                          return Expanded(
+                            child: ListView.builder(
+                              itemCount: data.data.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return arenaCard(data.data[index]);
+                              },
+                            ),
                           );
                         } else if (snapshot.hasError) {
                           return Text("${snapshot.error}");
@@ -90,18 +92,19 @@ class Home extends StatelessWidget {
               ));
   }
 
-  Widget arenaCard({Arenas? arena}) {
-    if(arena != null) {
+  Widget arenaCard(Arenas arena) {
+    print("arenas:" + arena.title + "\n");
+    if (arena != null) {
       return Column(
         children: [
+          Text(arena.title),
           Text(arena.description),
-        ]
+          Text(arena.price.toString())
+        ],
       );
     }
-    return Column(
-      children: const [
-        Text("No hay Arenas"),
-      ]
-    );
+    return Column(children: const [
+      Text("No hay Arenas"),
+    ]);
   }
 }

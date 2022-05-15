@@ -1,46 +1,65 @@
 import 'dart:convert';
 
-class DataUsers {
-    DataUsers({
-        required this.status,
-        required this.data,
-    });
+class DataRegister {
+  DataRegister({
+    required this.status,
+    required this.message,
+  });
 
-    String status;
-    User data;
+  String status;
+  String message;
 
-    factory DataUsers.fromJson(Map<String, dynamic> json) => DataUsers(
+  factory DataRegister.fromJson(Map<String, dynamic> json) => DataRegister(
         status: json["status"],
-        data: User.fromJson(json["data"]),
-    );
+        message: json["message"],
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "status": status,
-        "data": data.toJson(),
-    };
+        "message": message,
+      };
 }
 
+class DataUsers {
+  DataUsers({
+    required this.status,
+    required this.data,
+  });
+
+  String status;
+  User data;
+
+  factory DataUsers.fromJson(Map<String, dynamic> json) => DataUsers(
+        status: json["status"],
+        data: User.fromJson(json["data"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "status": status,
+        "data": data.toJson(),
+      };
+}
 
 class User {
-    User({
-        required this.id,
-        required this.names,
-        required this.lastnames,
-        required this.email,
-        required this.password,
-        required this.role,
-        required this.date,
-    });
+  User({
+    required this.id,
+    required this.names,
+    required this.lastnames,
+    required this.email,
+    required this.password,
+    required this.role,
+    required this.date,
+  });
 
-    String id;
-    String names;
-    String lastnames;
-    String email;
-    String password;
-    String role;
-    DateTime date;
+  String id;
+  String names;
+  String lastnames;
+  String email;
+  String password;
+  String role;
+  DateTime date;
 
-    factory User.fromJson(Map<String, dynamic> json) => User(
+  factory User.fromJson(Map<String, dynamic> json) => User(
         id: json["_id"],
         names: json["names"],
         lastnames: json["lastnames"],
@@ -48,9 +67,9 @@ class User {
         password: json["password"],
         role: json["role"],
         date: DateTime.parse(json["date"]),
-    );
+      );
 
-    Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toJson() => {
         "_id": id,
         "names": names,
         "lastnames": lastnames,
@@ -58,5 +77,5 @@ class User {
         "password": password,
         "role": role,
         "date": date.toIso8601String()
-    };
+      };
 }

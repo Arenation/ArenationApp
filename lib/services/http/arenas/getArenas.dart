@@ -10,7 +10,7 @@ import '../../../models/arenas/modelArena.dart';
 
 class GetArenas extends HttpBase {
   GetArenas() {
-    setState(StateHttp.loading);
+    setState(StateHttp.init);
   }
 
   @override

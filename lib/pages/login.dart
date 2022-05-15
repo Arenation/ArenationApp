@@ -112,7 +112,9 @@ class Login extends StatelessWidget {
                   ),
                 ),
                 TextButton(
-                  onPressed: null,
+                  onPressed: (){
+                    Navigator.pushNamed(context, '/register');
+                  },
                   style: CustomButtonStyle.outlinedButton(context,
                       fullWidth: true),
                   child: Text(
