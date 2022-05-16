@@ -16,7 +16,7 @@ class GetUser extends HttpBase {
   User? user;
 
   @override
-  Future<Response> register(Map<String, String> data) async {
+  Future<DataRegister> register(Map<String, String> data) async {
     data["role"] = "VISITOR";
     data["date"] = "2001-01-28";
     http.Client _client = http.Client();
@@ -29,16 +29,17 @@ class GetUser extends HttpBase {
         body: jsonEncode(data),
       );
 
-      final Response _decodeResponse = decodeResponseRegister(_response);
-
-      print(_response.body);
+      final DataRegister _decodeResponse = decodeResponseRegister(_response);
 
       _client.close();
 
       return _decodeResponse;
     } on SocketException catch (e) {
       setState(StateHttpUser.error);
-      return Response<String>("No se pudo conectar con el servidor");
+      return DataRegister(
+        status: "error",
+        message: e.toString(),
+      );
     }
   }
 
@@ -86,18 +87,17 @@ class GetUser extends HttpBase {
     }
   }
 
-  Response decodeResponseRegister(http.Response response) {
+  DataRegister decodeResponseRegister(http.Response response) {
     switch (response.statusCode) {
       case 200:
         setState(StateHttpUser.success);
-        return Response<DataRegister>(
-            DataRegister.fromJson(json.decode(response.body)));
+        return DataRegister.fromJson(json.decode(response.body));
       case 404:
         setState(StateHttpUser.error);
-        return Response<String>("404 Not Found");
+        return DataRegister.fromJson(json.decode(response.body));
       default:
         setState(StateHttpUser.error);
-        return Response<String>("500 Internal Server Error");
+        return DataRegister.fromJson(json.decode(response.body));
     }
   }
 }
