@@ -1,11 +1,12 @@
 import 'package:http/http.dart' as http;
 import '../../../models/response.dart';
 import './httpstate.dart';
+import '../../../models/users/modelUser.dart';
 
 abstract class HttpBase extends HttpState {
   Future<Response> login(String email, String password);
 
-  Future<Response> register(Map<String, String> data); 
+  Future<DataRegister> register(Map<String, String> data); 
 
   /*Future<Response> getUserById(String id);
 
