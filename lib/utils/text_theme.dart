@@ -29,12 +29,13 @@ class CustomTextTheme {
         );
   }
 
-  static TextStyle p200(BuildContext context, Color color) {
+  static TextStyle p200(BuildContext context, Color color,
+      {FontWeight fontWeight = FontWeight.normal}) {
     return Theme.of(context).textTheme.headline4!.copyWith(
         fontFamily: 'Noto Sans',
         fontSize: 14,
         letterSpacing: .25,
-        fontWeight: FontWeight.normal,
+        fontWeight: fontWeight,
         color: color);
   }
 

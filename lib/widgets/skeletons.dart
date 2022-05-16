@@ -44,3 +44,13 @@ Widget skeletonCardArena(BuildContext context) {
         }),
   );
 }
+
+Widget arenaImageSkeleton(double height) {
+  return SkeletonAvatar(
+    style: SkeletonAvatarStyle(
+      borderRadius: BorderRadius.circular(8.0),
+      width: double.infinity,
+      height: height,
+    ),
+  );
+}

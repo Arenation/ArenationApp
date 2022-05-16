@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp(
           debugShowCheckedModeBanner: false,
-          title: 'Reto_2',
+          title: 'Arenation',
           theme: ThemeData(
             primarySwatch: Colors.blue,
           ),
