@@ -7,10 +7,12 @@ import '../../httpstate.dart';
 import '../../servicesconfig.dart';
 import 'httpbase.dart';
 import '../../../models/arenas/modelArena.dart';
+import './arenaSelected.dart';
 
 class GetArenas extends HttpBase {
+  ArenaSelected arenaSelected = ArenaSelected();
   GetArenas() {
-    setState(StateHttp.init);
+    setState(StateHttp.loading);
   }
 
   @override
@@ -33,6 +35,27 @@ class GetArenas extends HttpBase {
     }
   }
 
+  Future<Response> getArena() async {
+    http.Client _client = http.Client();
+    try {
+      http.Response _response = await _client
+          .get(
+            Uri.parse(ServicesConfig.baseUrl +
+                "api/arenas/findOne/${arenaSelected.id}"),
+          )
+          .timeout(onTimeLimit());
+
+      final Response _decodeResponse = decodeResponseOneArena(_response);
+
+      _client.close();
+      
+      return _decodeResponse;      
+    } on SocketException catch (e) {
+      setState(StateHttp.error);
+      return Response<String>("No hay conexión a internet");
+    }
+  }
+
   Duration onTimeLimit() {
     return ServicesConfig.timeOutLimit;
   }
@@ -46,7 +69,22 @@ class GetArenas extends HttpBase {
             DataResponseArenas.fromJson(json.decode(response.body)));
       case 404:
         setState(StateHttp.error);
-        return Response<String>("404 Not Found");
+        return Response<Errors>(Errors.fromJson(json.decode(response.body)));
+      default:
+        setState(StateHttp.error);
+        return Response<String>("500 Internal Server Error");
+    }
+  }
+
+  Response decodeResponseOneArena(http.Response response) {
+    switch (response.statusCode) {
+      case 200:
+        setState(StateHttp.success);
+        return Response<DataArena>(
+            DataArena.fromJson(json.decode(response.body)));
+      case 404:
+        setState(StateHttp.error);
+        return Response<Errors>(Errors.fromJson(json.decode(response.body)));
       default:
         setState(StateHttp.error);
         return Response<String>("500 Internal Server Error");

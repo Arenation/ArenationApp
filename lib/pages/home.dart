@@ -96,7 +96,7 @@ class Home extends StatelessWidget {
             child: Column(
               children: [
                 FutureBuilder<Response>(
-                  future: arenas.state != StateHttp.error
+                  future: arenas.state == StateHttp.loading
                       ? arenas.getArenas()
                       : null,
                   builder:
@@ -109,7 +109,7 @@ class Home extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                              child: arenaCard(context, data.data[index]),
+                              child: arenaCard(context, data.data[index], arenas),
                             );
                           },
                         ),
@@ -146,12 +146,13 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget arenaCard(BuildContext context, Arenas arena) {
-    print("arenas:" + arena.title + "\n");
+  Widget arenaCard(BuildContext context, Arenas arena, GetArenas id) {
     if (arena != null) {
       return InkWell(
         onTap: () {
-          // print("${arena.title} clicked!");
+          id.arenaSelected.setId(arena.id);
+          id.setState(StateHttp.loading);
+          Navigator.pushNamed(context, "/arena");
         },
         child: Container(
           decoration: BoxDecoration(

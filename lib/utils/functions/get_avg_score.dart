@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:arenation_app/models/arenas/modelArena.dart';
 
 class AVGScore {

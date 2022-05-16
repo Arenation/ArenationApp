@@ -25,6 +25,30 @@ class DataResponseArenas {
   };
 }
 
+class DataArena {
+    DataArena({
+        required this.status,
+        required this.message,
+        required this.data,
+    });
+
+    String status;
+    String message;
+    Arenas data;
+
+    factory DataArena.fromJson(Map<String, dynamic> json) => DataArena(
+        status: json["status"],
+        message: json["message"],
+        data: Arenas.fromJson(json["data"]),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "status": status,
+        "message": message,
+        "data": data.toJson(),
+    };
+}
+
 class Arenas {
     Arenas({
         required this.id,
@@ -130,5 +154,37 @@ class SportId {
         "_id": id,
         "name": name,
         "players": players,
+    };
+}
+
+class Errors {
+    Errors({
+        required this.errors,
+    });
+
+    List<Error> errors;
+
+    factory Errors.fromJson(Map<String, dynamic> json) => Errors(
+        errors: List<Error>.from(json["errors"].map((x) => Error.fromJson(x))),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "errors": List<dynamic>.from(errors.map((x) => x.toJson())),
+    };
+}
+
+class Error {
+    Error({
+        required this.msg,
+    });
+
+    String msg;
+
+    factory Error.fromJson(Map<String, dynamic> json) => Error(
+        msg: json["msg"],
+    );
+
+    Map<String, dynamic> toJson() => {
+        "msg": msg,
     };
 }

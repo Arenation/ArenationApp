@@ -5,6 +5,6 @@ class ServicesConfig{
         "accept" : "application/json"
   };
 
-  static Duration timeOutLimit=const Duration(seconds: 20);
+  static Duration timeOutLimit=const Duration(seconds: 5);
   
 }
