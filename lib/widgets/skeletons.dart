@@ -54,3 +54,85 @@ Widget arenaImageSkeleton(double height) {
     ),
   );
 }
+
+Widget selectedArenaSkeleton(BuildContext context) {
+  return Expanded(
+    child: ListView(
+      children: [
+        SkeletonItem(
+          child: Column(
+            children: [
+              arenaImageSkeleton(170.0),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 1,
+                  lineStyle: SkeletonLineStyle(
+                    randomLength: true,
+                    height: 24,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 3,
+                  lineStyle: SkeletonLineStyle(
+                    randomLength: true,
+                    height: 16,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 1,
+                  lineStyle: SkeletonLineStyle(
+                    randomLength: true,
+                    height: 24,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 5,
+                  lineStyle: SkeletonLineStyle(
+                    // randomLength: true,
+                    height: 16,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              const SizedBox(
+                height: 16,
+              ),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 1,
+                  lineStyle: SkeletonLineStyle(
+                    randomLength: true,
+                    height: 24,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+              SkeletonParagraph(
+                style: SkeletonParagraphStyle(
+                  lines: 5,
+                  lineStyle: SkeletonLineStyle(
+                    randomLength: true,
+                    height: 16,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+}

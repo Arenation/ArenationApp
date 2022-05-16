@@ -42,7 +42,7 @@ class Register extends StatelessWidget {
                     shrinkWrap: true,
                     children: [
                       SvgPicture.asset(
-                        '../../assets/svg/logo_vertical.svg',
+                        'assets/svg/logo_vertical.svg',
                         height: 80,
                       ),
                       Container(
