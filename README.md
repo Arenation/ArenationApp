@@ -22,12 +22,12 @@ Esta versión de Arenation te permmite:
  * Iniciar sesión: si estás registrado la aplicación te llevará al home o pantalla principal. Si no estás registrado un modal apareceré indicandolo.
  * Home: una vez iniciado sesión encontrarás un lista de arenas que puedes seleccionar para tu reserva (en esta versión no se ha aplicado la reserva).
  * Arena: puedes seleccionar del listado de arenas, la que llame más tu atención y ver los detalles que pueden llevarte a ser la mejor opción.
- * * Esta cuenta con un carrusel de imagenes al incio de la pantalla, el cual puedes ir deslizando para tener un mejor acercamiento con la arena.
- * * Una descripción detallada de la arena.
- * * Una sección de comentarios, que han dejado los usuarios quienes han tenido experiencia con la arena. Igual que las imagenes para observar los diferentes comentarios deberás deslizar.
+   * Esta cuenta con un carrusel de imagenes al incio de la pantalla, el cual puedes ir deslizando para tener un mejor acercamiento con la arena.
+   * Una descripción detallada de la arena.
+   * Una sección de comentarios, que han dejado los usuarios quienes han tenido experiencia con la arena. Igual que las imagenes para observar los diferentes comentarios deberás deslizar.
 
 Arenation tiene una API-BACK es propia de ARENATION:
 Esta api está desplegada en la aplicación de heroku y está en NodeJs.
-- [Heroku: Api back ARENATION](https://arenationfull.herokuapp.com/).
+- [Heroku: Api Arenation](https://arenationfull.herokuapp.com/).
 
 Por favor no hacer mal uso de la api, es una primera versión de lo que podría ser arenation.
