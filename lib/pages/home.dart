@@ -1,3 +1,4 @@
+import 'package:arenation_app/services/http/users/getUser.dart';
 import 'package:arenation_app/utils/custom_colors.dart';
 import 'package:arenation_app/utils/text_theme.dart';
 import 'package:arenation_app/widgets/skeletons.dart';
@@ -6,62 +7,88 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../services/http/arenas/getArenas.dart';
 import '../services/httpstate.dart';
+import '../services/httpstatearena.dart';
 import '../models/response.dart';
 import '../models/arenas/modelArena.dart';
 import 'package:arenation_app/utils/functions/get_avg_score.dart';
 import "package:intl/intl.dart";
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class Home extends StatelessWidget {
-  const Home({Key? key}) : super(key: key);
+  Home({Key? key}) : super(key: key);
+
+  int counter = 0;
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: CustomColors.secondaryWhite,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: CustomColors.secondaryWhite,
-        elevation: 0,
-        // title: Text("Arenation", style: CustomTextTheme.h2(context),),
-        titleSpacing: 0,
-        title: Padding(
-          padding: const EdgeInsets.only(left: 24.0),
-          child: SvgPicture.asset("assets/svg/logo.svg"),
+    return WillPopScope(
+        child: Scaffold(
+          backgroundColor: CustomColors.secondaryWhite,
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: CustomColors.secondaryWhite,
+            elevation: 0,
+            // title: Text("Arenation", style: CustomTextTheme.h2(context),),
+            titleSpacing: 0,
+            title: Padding(
+              padding: const EdgeInsets.only(left: 24.0),
+              child: SvgPicture.asset("assets/svg/logo.svg"),
+            ),
+            actions: [
+              Padding(
+                padding: const EdgeInsets.only(
+                  right: 24.0,
+                  top: 5.0,
+                  bottom: 5.0,
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: CustomColors.secondaryLight,
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: IconButton(
+                      onPressed: null,
+                      icon: Icon(
+                        Icons.person_outline_rounded,
+                        color: CustomColors.placeholderColor,
+                      )),
+                ),
+              )
+            ],
+          ),
+          body: Consumer<GetArenas>(
+            builder: (_context, getArenas, child) {
+              return Column(children: [
+                filterHeader(_context),
+                Expanded(
+                  child: listArenas(context, getArenas),
+                )
+              ]);
+            },
+          ),
         ),
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(
-              right: 24.0,
-              top: 5.0,
-              bottom: 5.0,
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                color: CustomColors.secondaryLight,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: IconButton(
-                  onPressed: null,
-                  icon: Icon(
-                    Icons.person_outline_rounded,
-                    color: CustomColors.placeholderColor,
-                  )),
-            ),
-          )
-        ],
-      ),
-      body: Consumer<GetArenas>(
-        builder: (_context, getArenas, child) {
-          return Column(children: [
-            filterHeader(_context),
-            Expanded(
-              child: listArenas(context, getArenas),
-            )
-          ]);
-        },
-      ),
-    );
+        onWillPop: () async {
+          counter = counter + 1;
+          if (counter == 2) {
+            Fluttertoast.showToast(
+                msg: "Presiona nuevamente para salir de la aplicación",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.BOTTOM,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black54,
+                textColor: Colors.white,
+                fontSize: 16.0);
+            Future.delayed(const Duration(seconds: 3), () {
+              counter = 0;
+            });
+          } else if (counter == 3) {
+            counter = 0;
+            Provider.of<GetArenas>(context, listen: false).stateArena.setStateArena(StateHttpArena.init);
+            Navigator.pushNamed(context, "/");
+          }
+          return false;
+        });
   }
 
   Widget filterHeader(context) {
@@ -95,14 +122,14 @@ class Home extends StatelessWidget {
       "sport": sport,
       "city": city,
     };
-    return arenas.state == StateHttp.error
+    return arenas.stateArena.state == StateHttpArena.error
         ? arenaEmptyResult(mainContext)
         : Padding(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
             child: Column(
               children: [
                 FutureBuilder<Response>(
-                  future: arenas.state == StateHttp.loading
+                  future: arenas.stateArena.state == StateHttpArena.loading
                       ? arenas.getArenas(body)
                       : null,
                   builder:

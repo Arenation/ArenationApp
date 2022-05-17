@@ -1,9 +1,8 @@
 import 'package:http/http.dart' as http;
 import '../../../models/response.dart';
 import '../../httpstate.dart';
-import '../arenas/arenaSelected.dart';
 
-abstract class HttpBase extends HttpState {
+abstract class HttpBase extends HttpState{
   Future<Response> getArenas(Map<String, String> data);
 
   /* Future<Response> getArenasById(String id);

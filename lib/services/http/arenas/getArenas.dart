@@ -4,27 +4,33 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../../../models/response.dart';
 import '../../httpstate.dart';
+import '../../httpstatearena.dart';
 import '../../servicesconfig.dart';
 import 'httpbase.dart';
 import '../../../models/arenas/modelArena.dart';
 import './arenaSelected.dart';
 
-class GetArenas extends HttpBase {
+class GetArenas extends HttpBase  {
   ArenaSelected arenaSelected = ArenaSelected();
+  HttpStateArena stateArena = HttpStateArena();
+
   GetArenas() {
-    setState(StateHttp.loading);
+    setState(StateHttp.init);
+    stateArena.setStateArena(StateHttpArena.init);
   }
 
   @override
   Future<Response> getArenas(Map<String, String> data) async {
     http.Client _client = http.Client();
     try {
-      http.Response _response = await _client.post(
-          Uri.parse(ServicesConfig.baseUrl + "api/arenas/findSportOrCity"),
-          headers: <String, String>{
-            'Content-Type': 'application/json; charset=UTF-8',
-          },
-          body: jsonEncode(data)).timeout(onTimeLimit());
+      http.Response _response = await _client
+          .post(
+              Uri.parse(ServicesConfig.baseUrl + "api/arenas/findSportOrCity"),
+              headers: <String, String>{
+                'Content-Type': 'application/json; charset=UTF-8',
+              },
+              body: jsonEncode(data))
+          .timeout(onTimeLimit());
 
       final Response _decodeResponse = decodeResponse(_response);
 
@@ -65,14 +71,14 @@ class GetArenas extends HttpBase {
   Response decodeResponse(http.Response response) {
     switch (response.statusCode) {
       case 200:
-        setState(StateHttp.success);
+        stateArena.setStateArena(StateHttpArena.success);
         return Response<DataResponseArenas>(
             DataResponseArenas.fromJson(json.decode(response.body)));
       case 404:
-        setState(StateHttp.error);
+        stateArena.setStateArena(StateHttpArena.error);
         return Response<Errors>(Errors.fromJson(json.decode(response.body)));
       default:
-        setState(StateHttp.error);
+        stateArena.setStateArena(StateHttpArena.error);
         return Response<String>("500 Internal Server Error");
     }
   }
