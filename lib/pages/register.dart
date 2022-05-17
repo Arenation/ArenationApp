@@ -19,7 +19,7 @@ class Register extends StatelessWidget {
   String message = "";
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     return Scaffold(
         body: Consumer<GetUser>(builder: (context, serviceUser, child) {
       return Padding(
@@ -30,9 +30,11 @@ class Register extends StatelessWidget {
                   : null,
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  print(snapshot.data!.status);
                   message = snapshot.data!.message;
                   state = snapshot.data!.status;
+                  if (state == "success") {
+                    return registerOK(mainContext);
+                  }
                 } else if (snapshot.hasError) {
                   print(snapshot.error);
                 }
@@ -94,7 +96,7 @@ class Register extends StatelessWidget {
                               CustomTextFieldDecoration.textFieldDecoration(
                                   context,
                                   "Fecha de nacimiento",
-                                  "Fecha de nacimiento"),
+                                  "AAAA-MM-DD"),
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
                               return '*Debe llenar este campo';
@@ -129,10 +131,6 @@ class Register extends StatelessWidget {
                           },
                         ),
                       ),
-                      if(state != "success")
-                        Text(
-                          message,
-                        ),
                       Container(
                         decoration: BoxDecoration(
                             color: CustomColors.secondaryLight,
@@ -140,6 +138,7 @@ class Register extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(8.0))),
                         margin: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
+                          obscureText: true,
                           decoration:
                               CustomTextFieldDecoration.textFieldDecoration(
                                   context, "Contraseña", "Contraseña"),
@@ -159,6 +158,7 @@ class Register extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(8.0))),
                         margin: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
+                            obscureText: true,
                             decoration:
                                 CustomTextFieldDecoration.textFieldDecoration(
                                     context,
@@ -173,6 +173,11 @@ class Register extends StatelessWidget {
                               return null;
                             }),
                       ),
+                      if (state != "success")
+                        Text(
+                          message,
+                          style: const TextStyle(color: Colors.red),
+                        ),
                       TextButton(
                         onPressed: () {
                           if (formKey.currentState!.validate()) {
@@ -181,8 +186,9 @@ class Register extends StatelessWidget {
                         },
                         style: CustomButtonStyle.outlinedButton(context,
                             fullWidth: true),
-                        child: Text(
-                          "Registrate",
+                        child: Text(StateHttpUser.loading == serviceUser.state
+                            ? "Registrando..."
+                            : "Registrar",
                           textAlign: TextAlign.left,
                           style: CustomTextTheme.buttonText(
                               context, CustomColors.primary500),
@@ -204,5 +210,57 @@ class Register extends StatelessWidget {
                 );
               }));
     }));
+  }
+
+  Widget registerOK(BuildContext context){
+    return Scaffold(
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SvgPicture.asset(
+              'assets/svg/logo_vertical.svg',
+              height: 80,
+            ),
+            Text(
+              "Registro exitoso",
+              style: CustomTextTheme.h1(context),
+            ),
+            Text(
+              "Ahora puedes iniciar sesión",
+              style: CustomTextTheme.h1(context),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/');
+              },
+              style: CustomButtonStyle.outlinedButton(context,
+                  fullWidth: true),
+              child: Text(
+                "Iniciar sesión",
+                textAlign: TextAlign.left,
+                style: CustomTextTheme.buttonText(
+                    context, CustomColors.primary500),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget emailDialog(BuildContext context){
+    return AlertDialog(
+      title: Text("Correo electrónico"),
+      content: Text("El correo electrónico ya está registrado"),
+      actions: [
+        FlatButton(
+          child: Text("Aceptar"),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    );
   }
 }

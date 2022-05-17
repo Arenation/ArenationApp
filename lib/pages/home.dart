@@ -89,6 +89,12 @@ class Home extends StatelessWidget {
 
   Widget listArenas(BuildContext mainContext, GetArenas arenas) {
     DataResponseArenas data;
+    String sport = "";
+    String city = "";
+    Map<String, String> body = {
+      "sport": sport,
+      "city": city,
+    };
     return arenas.state == StateHttp.error
         ? arenaEmptyResult(mainContext)
         : Padding(
@@ -97,7 +103,7 @@ class Home extends StatelessWidget {
               children: [
                 FutureBuilder<Response>(
                   future: arenas.state == StateHttp.loading
-                      ? arenas.getArenas()
+                      ? arenas.getArenas(body)
                       : null,
                   builder:
                       (BuildContext context, AsyncSnapshot<Response> snapshot) {
@@ -109,7 +115,8 @@ class Home extends StatelessWidget {
                           itemBuilder: (BuildContext context, int index) {
                             return Padding(
                               padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                              child: arenaCard(context, data.data[index], arenas),
+                              child:
+                                  arenaCard(context, data.data[index], arenas),
                             );
                           },
                         ),

@@ -4,7 +4,7 @@ import '../../httpstate.dart';
 import '../arenas/arenaSelected.dart';
 
 abstract class HttpBase extends HttpState {
-  Future<Response> getArenas();
+  Future<Response> getArenas(Map<String, String> data);
 
   /* Future<Response> getArenasById(String id);
 

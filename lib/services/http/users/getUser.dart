@@ -60,6 +60,7 @@ class GetUser extends HttpBase {
 
       final Response _decodeResponse = decodeResponseLogin(_response);
       _client.close();
+      print(_decodeResponse.getData);
 
       return _decodeResponse;
     } on SocketException catch (e) {
