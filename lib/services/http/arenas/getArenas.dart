@@ -16,14 +16,15 @@ class GetArenas extends HttpBase {
   }
 
   @override
-  Future<Response> getArenas() async {
+  Future<Response> getArenas(Map<String, String> data) async {
     http.Client _client = http.Client();
     try {
-      http.Response _response = await _client
-          .get(
-            Uri.parse(ServicesConfig.baseUrl + "api/arenas"),
-          )
-          .timeout(onTimeLimit());
+      http.Response _response = await _client.post(
+          Uri.parse(ServicesConfig.baseUrl + "api/arenas/findSportOrCity"),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(data)).timeout(onTimeLimit());
 
       final Response _decodeResponse = decodeResponse(_response);
 
@@ -48,8 +49,8 @@ class GetArenas extends HttpBase {
       final Response _decodeResponse = decodeResponseOneArena(_response);
 
       _client.close();
-      
-      return _decodeResponse;      
+
+      return _decodeResponse;
     } on SocketException catch (e) {
       setState(StateHttp.error);
       return Response<String>("No hay conexión a internet");
