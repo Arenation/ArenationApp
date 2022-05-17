@@ -27,7 +27,7 @@ Esta versión de Arenation te permmite:
  * * Una sección de comentarios, que han dejado los usuarios quienes han tenido experiencia con la arena. Igual que las imagenes para observar los diferentes comentarios deberás deslizar.
 
 Arenation tiene una API-BACK es propia de ARENATION:
-
-- [](https://arenationfull.herokuapp.com/).
+Esta api está desplegada en la aplicación de heroku y está en NodeJs.
+- [Heroku: Api back ARENATION](https://arenationfull.herokuapp.com/).
 
 Por favor no hacer mal uso de la api, es una primera versión de lo que podría ser arenation.
