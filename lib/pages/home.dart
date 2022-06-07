@@ -7,18 +7,30 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import '../services/http/arenas/getArenas.dart';
 import '../services/httpstate.dart';
-import '../services/httpstatearena.dart';
 import '../models/response.dart';
 import '../models/arenas/modelArena.dart';
 import 'package:arenation_app/utils/functions/get_avg_score.dart';
 import "package:intl/intl.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../utils/button_style.dart';
+import '../utils/textfield_style.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
 
   int counter = 0;
+
+  String sport = "";
+  String city = "";
+
+  void setCity(String value) {
+    city = value;
+  }
+
+  void setSport(String value) {
+    sport = value;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +72,7 @@ class Home extends StatelessWidget {
           body: Consumer<GetArenas>(
             builder: (_context, getArenas, child) {
               return Column(children: [
-                filterHeader(_context),
+                filterHeader(_context, getArenas),
                 Expanded(
                   child: listArenas(context, getArenas),
                 )
@@ -84,14 +96,15 @@ class Home extends StatelessWidget {
             });
           } else if (counter == 3) {
             counter = 0;
-            Provider.of<GetArenas>(context, listen: false).stateArena.setStateArena(StateHttpArena.init);
+            Provider.of<GetArenas>(context, listen: false)
+                .setStateOne(StateHttp.init);
             Navigator.pushNamed(context, "/");
           }
           return false;
         });
   }
 
-  Widget filterHeader(context) {
+  Widget filterHeader(BuildContext context, GetArenas arenas) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 12, 24, 12),
       child: Row(
@@ -103,11 +116,17 @@ class Home extends StatelessWidget {
             style: CustomTextTheme.h1(context),
           ),
           IconButton(
-            onPressed: null,
-            icon: Icon(
-              Icons.filter_alt_outlined,
-              color: CustomColors.secondaryDark,
-            ),
+            onPressed: () {
+              setCity("Sahagún");
+              showModalFilter(context);
+              arenas.setStateOne(StateHttp.loading);
+            },
+            icon: StateHttp.loading == arenas.stateOne
+                ? skeletonCardArena(context)
+                : Icon(
+                    Icons.filter_list_rounded,
+                    color: CustomColors.placeholderColor,
+                  ),
           ),
         ],
       ),
@@ -116,20 +135,22 @@ class Home extends StatelessWidget {
 
   Widget listArenas(BuildContext mainContext, GetArenas arenas) {
     DataResponseArenas data;
-    String sport = "";
-    String city = "";
     Map<String, String> body = {
       "sport": sport,
       "city": city,
     };
-    return arenas.stateArena.state == StateHttpArena.error
-        ? arenaEmptyResult(mainContext)
+
+    return arenas.stateOne == StateHttp.error
+        ? Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [arenaEmptyResult(mainContext)],
+          )
         : Padding(
             padding: const EdgeInsets.fromLTRB(24, 0, 24, 0),
             child: Column(
               children: [
                 FutureBuilder<Response>(
-                  future: arenas.stateArena.state == StateHttpArena.loading
+                  future: arenas.stateOne == StateHttp.loading
                       ? arenas.getArenas(body)
                       : null,
                   builder:
@@ -137,17 +158,23 @@ class Home extends StatelessWidget {
                     if (snapshot.hasData) {
                       data = snapshot.data!.getData as DataResponseArenas;
                       return Expanded(
-                        child: ListView.builder(
-                          itemCount: data.data.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Padding(
-                              padding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
-                              child:
-                                  arenaCard(context, data.data[index], arenas),
-                            );
-                          },
-                        ),
-                      );
+                          child: data.data.isNotEmpty
+                              ? ListView.builder(
+                                  itemCount: data.data.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 16, 0, 16),
+                                      child: arenaCard(
+                                          context, data.data[index], arenas),
+                                    );
+                                  },
+                                )
+                              : Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [arenaEmptyResult(mainContext)],
+                                ));
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
                     }
@@ -163,6 +190,7 @@ class Home extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(24, 0, 24, 8.0),
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
             margin: const EdgeInsets.only(bottom: 32),
@@ -174,6 +202,7 @@ class Home extends StatelessWidget {
           Text(
             "Ups! No encontramos resultados",
             style: CustomTextTheme.h1(context),
+            textAlign: TextAlign.center,
           )
         ],
       ),
@@ -280,5 +309,134 @@ class Home extends StatelessWidget {
     return Column(children: const [
       Text("No hay Arenas"),
     ]);
+  }
+
+  void showModalFilter(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20),
+                topRight: Radius.circular(20),
+              ),
+            ),
+            height: 400,
+            width: double.infinity,
+            alignment: Alignment.center,
+            child: Padding(
+              padding: const EdgeInsets.all(25.0),
+              child: Column(
+                children: [
+                  Text(
+                    "Filtros",
+                    style: CustomTextTheme.h1(context),
+                  ),
+                  Container(margin: const EdgeInsets.only(bottom: 16)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Ciudad",
+                        style: CustomTextTheme.h2(context),
+                      ),
+                    ],
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: CustomColors.secondaryLight,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0))),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        underline: Container(
+                          height: 4,
+                        ),
+                        value: city,
+                        elevation: 50,
+                        style: TextStyle(color: CustomColors.secondaryDark),
+                        items: <String>[
+                          "Montería",
+                          "San Pelayo",
+                          "Cereté",
+                          "Sahagún",
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setCity(newValue as String);
+                        },
+                      )),
+                  Container(margin: const EdgeInsets.only(bottom: 16)),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Deporte",
+                        style: CustomTextTheme.h2(context),
+                      ),
+                    ],
+                  ),
+                  Container(
+                      decoration: BoxDecoration(
+                          color: CustomColors.secondaryLight,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0))),
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        underline: Container(
+                          height: 4,
+                        ),
+                        elevation: 50,
+                        style: TextStyle(color: CustomColors.secondaryDark),
+                        value: "Fútbol",
+                        items: <String>[
+                          "Fútbol",
+                          "Baloncesto",
+                          "Voleibol",
+                          "Tenis"
+                        ].map((String value) {
+                          return DropdownMenuItem<String>(
+                            value: value,
+                            child: Text(value),
+                          );
+                        }).toList(),
+                        onChanged: (String? newValue) {
+                          setCity(newValue as String);
+                        },
+                      )),
+                  Container(margin: const EdgeInsets.only(bottom: 16)),
+                  TextButton(
+                    onPressed: null,
+                    style: CustomButtonStyle.solidButton(context,
+                        fullWidth: true, pd: 12),
+                    child: Text(
+                      "Buscar",
+                      style: CustomTextTheme.buttonText(
+                          context, CustomColors.secondaryWhite),
+                    ),
+                  ),
+                  Container(margin: const EdgeInsets.only(bottom: 14)),
+                  TextButton(
+                    onPressed: null,
+                    style: CustomButtonStyle.outlinedButton(context,
+                        fullWidth: true, pd: 12),
+                    child: Text(
+                      "Limpiar filtros",
+                      textAlign: TextAlign.left,
+                      style: CustomTextTheme.buttonText(
+                          context, CustomColors.primary500),
+                    ),
+                  ),
+                ],
+              ),
+            ));
+      },
+    );
   }
 }

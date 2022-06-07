@@ -15,6 +15,7 @@ import '../models/response.dart';
 import '../models/users/modelUser.dart';
 import '../services/http/arenas/getArenas.dart';
 import '../services/httpstatearena.dart';
+import '../services/httpstate.dart';
 
 class Login extends StatelessWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -113,8 +114,13 @@ class Login extends StatelessWidget {
                                       var dar = response.getData as DataUsers;
                                       if (dar.status == "success") {
                                         Provider.of<GetArenas>(context,
-                                                listen: false).stateArena.
-                                            setStateArena(StateHttpArena.loading);
+                                                listen: false)
+                                            .stateArena
+                                            .setStateArena(
+                                                StateHttpArena.loading);
+                                        Provider.of<GetArenas>(context,
+                                                listen: false)
+                                            .setStateOne(StateHttp.loading);
                                         Navigator.pushNamed(context, "/home");
                                       }
                                     } else {

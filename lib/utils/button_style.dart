@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 
 class CustomButtonStyle {
   static ButtonStyle solidButton(BuildContext context,
-      {bool fullWidth = true}) {
+      {bool fullWidth = true, double pd = 24}) {
     return ButtonStyle(
         backgroundColor:
             MaterialStateProperty.all<Color?>(CustomColors.primary500),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          const EdgeInsets.fromLTRB(24, 24, 24, 24),
+          EdgeInsets.fromLTRB(pd, pd, pd, pd),
         ),
         minimumSize: fullWidth
             ? MaterialStateProperty.all<Size>(
@@ -20,11 +20,11 @@ class CustomButtonStyle {
   }
 
   static ButtonStyle outlinedButton(BuildContext context,
-      {bool fullWidth = true}) {
+      {bool fullWidth = true, double pd = 24}) {
     return ButtonStyle(
       backgroundColor: MaterialStateProperty.all<Color?>(Colors.transparent),
       padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-        const EdgeInsets.fromLTRB(24, 24, 24, 24),
+        EdgeInsets.fromLTRB(pd, pd, pd, pd),
       ),
       minimumSize: fullWidth
           ? MaterialStateProperty.all<Size>(

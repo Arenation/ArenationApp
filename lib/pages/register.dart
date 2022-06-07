@@ -254,8 +254,8 @@ class Register extends StatelessWidget {
       title: Text("Correo electrónico"),
       content: Text("El correo electrónico ya está registrado"),
       actions: [
-        FlatButton(
-          child: Text("Aceptar"),
+        TextButton(
+          child: const Text("Aceptar"),
           onPressed: () {
             Navigator.of(context).pop();
           },

@@ -29,7 +29,11 @@ class Arena extends StatelessWidget {
         titleSpacing: 0,
         title: const Text("Arena"),
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Provider.of<GetArenas>(context, listen: false)
+                .setStateOne(StateHttp.loading);
+            Navigator.pop(context);
+          },
           icon: Icon(
             Icons.chevron_left_outlined,
             color: CustomColors.secondaryDark,
