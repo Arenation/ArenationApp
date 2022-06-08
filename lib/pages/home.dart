@@ -18,18 +18,29 @@ import '../utils/textfield_style.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
+  int counter = 0;
+  @override
+  Widget build(BuildContext context) {
+    return HomeStatefulWidget();
+  }
+}
 
+class HomeStatefulWidget extends StatefulWidget {
+  HomeStatefulWidget({Key? key}) : super(key: key);
+
+  @override
+  _HomeStatefulWidgetState createState() => _HomeStatefulWidgetState();
+}
+
+class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   int counter = 0;
 
   String sport = "";
   String city = "";
 
-  void setCity(String value) {
-    city = value;
-  }
-
-  void setSport(String value) {
-    sport = value;
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -60,7 +71,7 @@ class Home extends StatelessWidget {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: IconButton(
-                      onPressed: null,
+                      onPressed: () => Navigator.pushNamed(context, "/profile"),
                       icon: Icon(
                         Icons.person_outline_rounded,
                         color: CustomColors.placeholderColor,
@@ -117,16 +128,12 @@ class Home extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              setCity("Sahagún");
-              showModalFilter(context);
-              arenas.setStateOne(StateHttp.loading);
+              showModalFilter(context, arenas);
             },
-            icon: StateHttp.loading == arenas.stateOne
-                ? skeletonCardArena(context)
-                : Icon(
-                    Icons.filter_list_rounded,
-                    color: CustomColors.placeholderColor,
-                  ),
+            icon: Icon(
+              Icons.filter_list_rounded,
+              color: CustomColors.placeholderColor,
+            ),
           ),
         ],
       ),
@@ -135,9 +142,36 @@ class Home extends StatelessWidget {
 
   Widget listArenas(BuildContext mainContext, GetArenas arenas) {
     DataResponseArenas data;
+    String sportData = sport;
+    String cityData = city;
+    switch (sportData) {
+      case "Fútbol":
+        sportData = "627ee546e34dcdc7fb4c127e";
+        break;
+      case "Baloncesto":
+        sportData = "62a0043245012af976eaf157";
+        break;
+      case "Voleibol":
+        sportData = "62a0047645012af976eaf159";
+        break;
+      case "Tenis":
+        sportData = "62a0046445012af976eaf158";
+        break;
+      case "Seleccionar deporte":
+        sportData = "";
+        break;
+    }
+    switch (cityData) {
+      case "Seleccionar ciudad":
+        cityData = "";
+        break;
+      default:
+        cityData = city;
+        break;
+    }
     Map<String, String> body = {
-      "sport": sport,
-      "city": city,
+      "sport": sportData,
+      "city": cityData,
     };
 
     return arenas.stateOne == StateHttp.error
@@ -311,131 +345,160 @@ class Home extends StatelessWidget {
     ]);
   }
 
-  void showModalFilter(BuildContext context) {
+  void showModalFilter(BuildContext context, GetArenas services) {
     showModalBottomSheet(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+        ),
+      ),
       context: context,
       builder: (context) {
-        return Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(20),
-                topRight: Radius.circular(20),
+        return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) {
+          return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20),
+                  topRight: Radius.circular(20),
+                ),
               ),
-            ),
-            height: 400,
-            width: double.infinity,
-            alignment: Alignment.center,
-            child: Padding(
-              padding: const EdgeInsets.all(25.0),
-              child: Column(
-                children: [
-                  Text(
-                    "Filtros",
-                    style: CustomTextTheme.h1(context),
-                  ),
-                  Container(margin: const EdgeInsets.only(bottom: 16)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Ciudad",
-                        style: CustomTextTheme.h2(context),
-                      ),
-                    ],
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: CustomColors.secondaryLight,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8.0))),
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        underline: Container(
-                          height: 4,
-                        ),
-                        value: city,
-                        elevation: 50,
-                        style: TextStyle(color: CustomColors.secondaryDark),
-                        items: <String>[
-                          "Montería",
-                          "San Pelayo",
-                          "Cereté",
-                          "Sahagún",
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setCity(newValue as String);
-                        },
-                      )),
-                  Container(margin: const EdgeInsets.only(bottom: 16)),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        "Deporte",
-                        style: CustomTextTheme.h2(context),
-                      ),
-                    ],
-                  ),
-                  Container(
-                      decoration: BoxDecoration(
-                          color: CustomColors.secondaryLight,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8.0))),
-                      child: DropdownButton<String>(
-                        isExpanded: true,
-                        underline: Container(
-                          height: 4,
-                        ),
-                        elevation: 50,
-                        style: TextStyle(color: CustomColors.secondaryDark),
-                        value: "Fútbol",
-                        items: <String>[
-                          "Fútbol",
-                          "Baloncesto",
-                          "Voleibol",
-                          "Tenis"
-                        ].map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: Text(value),
-                          );
-                        }).toList(),
-                        onChanged: (String? newValue) {
-                          setCity(newValue as String);
-                        },
-                      )),
-                  Container(margin: const EdgeInsets.only(bottom: 16)),
-                  TextButton(
-                    onPressed: null,
-                    style: CustomButtonStyle.solidButton(context,
-                        fullWidth: true, pd: 12),
-                    child: Text(
-                      "Buscar",
-                      style: CustomTextTheme.buttonText(
-                          context, CustomColors.secondaryWhite),
+              width: double.infinity,
+              child: Padding(
+                padding: const EdgeInsets.all(25.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "Filtros",
+                      style: CustomTextTheme.h1(context),
                     ),
-                  ),
-                  Container(margin: const EdgeInsets.only(bottom: 14)),
-                  TextButton(
-                    onPressed: null,
-                    style: CustomButtonStyle.outlinedButton(context,
-                        fullWidth: true, pd: 12),
-                    child: Text(
-                      "Limpiar filtros",
-                      textAlign: TextAlign.left,
-                      style: CustomTextTheme.buttonText(
-                          context, CustomColors.primary500),
+                    Container(margin: const EdgeInsets.only(bottom: 16)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Ciudad",
+                          style: CustomTextTheme.h2(context),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
-            ));
+                    Container(
+                        decoration: BoxDecoration(
+                            color: CustomColors.secondaryLight,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8.0))),
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          underline: Container(
+                            height: 4,
+                          ),
+                          value: city.isEmpty ? "Seleccionar ciudad" : city,
+                          elevation: 50,
+                          style: TextStyle(color: CustomColors.secondaryDark),
+                          items: <String>[
+                            "Seleccionar ciudad",
+                            "Montería",
+                            "San Pelayo",
+                            "Cereté",
+                            "Sahagún",
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              city = newValue!;
+                            });
+                          },
+                        )),
+                    Container(margin: const EdgeInsets.only(bottom: 16)),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "Deporte",
+                          style: CustomTextTheme.h2(context),
+                        ),
+                      ],
+                    ),
+                    //Cambiar estructura de muestra de items... Que vengan de la BD.
+                    Container(
+                        decoration: BoxDecoration(
+                            color: CustomColors.secondaryLight,
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(8.0))),
+                        child: DropdownButton<String>(
+                          isExpanded: true,
+                          underline: Container(
+                            height: 4,
+                          ),
+                          value: sport.isEmpty ? "Seleccionar deporte" : sport,
+                          elevation: 50,
+                          style: TextStyle(color: CustomColors.secondaryDark),
+                          items: <String>[
+                            "Seleccionar deporte",
+                            "Fútbol",
+                            "Baloncesto",
+                            "Voleibol",
+                            "Tenis"
+                          ].map<DropdownMenuItem<String>>((String value) {
+                            return DropdownMenuItem<String>(
+                              value: value,
+                              child: Text(value),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              sport = newValue!;
+                            });
+                          },
+                        )),
+                    Container(margin: const EdgeInsets.only(bottom: 16)),
+                    TextButton(
+                      onPressed: () {
+                        services.setStateOne(StateHttp.loading);
+                        Future.delayed(const Duration(milliseconds: 1000), () {
+                          Navigator.pop(context);
+                        });
+                      },
+                      style: CustomButtonStyle.solidButton(context,
+                          fullWidth: true, pd: 12),
+                      child: Text(
+                        "Buscar",
+                        style: CustomTextTheme.buttonText(
+                            context, CustomColors.secondaryWhite),
+                      ),
+                    ),
+                    Container(margin: const EdgeInsets.only(bottom: 14)),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          city = "";
+                          sport = "";
+                        });
+                        services.setStateOne(StateHttp.loading);
+                        Future.delayed(const Duration(milliseconds: 1000), () {
+                          Navigator.pop(context);
+                        });
+                      },
+                      style: CustomButtonStyle.outlinedButton(context,
+                          fullWidth: true, pd: 12),
+                      child: Text(
+                        "Limpiar filtros",
+                        textAlign: TextAlign.left,
+                        style: CustomTextTheme.buttonText(
+                            context, CustomColors.primary500),
+                      ),
+                    ),
+                  ],
+                ),
+              ));
+        });
       },
     );
   }

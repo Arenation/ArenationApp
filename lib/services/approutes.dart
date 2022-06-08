@@ -3,6 +3,7 @@ import '../pages/home.dart';
 import '../pages/login.dart';
 import '../pages/register.dart';
 import '../pages/arena.dart';
+import '../pages/profile.dart';
 
 class AppRoutes {
   Map<String, WidgetBuilder>? _routes;
@@ -16,7 +17,8 @@ class AppRoutes {
       '/': (context) => Login(),
       "/home": (context) => Home(),
       '/register': (context) => Register(),
-      '/arena': (context) => Arena(),
+      '/arena': (context) => const Arena(),
+      '/profile': (context) => Profile(),
     };
   }
 

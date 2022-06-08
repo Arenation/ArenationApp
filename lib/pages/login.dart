@@ -150,13 +150,17 @@ class Login extends StatelessWidget {
                               },
                               style: CustomButtonStyle.solidButton(context,
                                   fullWidth: true),
-                              child: Text(
-                                StateHttpUser.loading == serviceUser.state
-                                    ? "Cargando..."
-                                    : "Iniciar sesión",
-                                style: CustomTextTheme.buttonText(
-                                    context, CustomColors.secondaryWhite),
-                              ),
+                              child: StateHttpUser.loading == serviceUser.state
+                                  ? CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                      valueColor: AlwaysStoppedAnimation(
+                                          CustomColors.secondaryWhite),
+                                    )
+                                  : Text(
+                                      "Iniciar sesión",
+                                      style: CustomTextTheme.buttonText(
+                                          context, CustomColors.secondaryWhite),
+                                    ),
                             ),
                           ),
                           TextButton(
