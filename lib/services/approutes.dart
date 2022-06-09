@@ -17,7 +17,7 @@ class AppRoutes {
       '/': (context) => Login(),
       "/home": (context) => Home(),
       '/register': (context) => Register(),
-      '/arena': (context) => const Arena(),
+      '/arena': (context) => Arena(),
       '/profile': (context) => Profile(),
     };
   }

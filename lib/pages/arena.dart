@@ -14,9 +14,33 @@ import '../services/httpstate.dart';
 import '../models/arenas/modelArena.dart';
 import 'package:arenation_app/widgets/image_carousel.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import '../utils/button_style.dart';
 
 class Arena extends StatelessWidget {
-  const Arena({Key? key}) : super(key: key);
+  Arena({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    return ArenaStatefulWidget();
+  }
+}
+
+class ArenaStatefulWidget extends StatefulWidget {
+  ArenaStatefulWidget({Key? key}) : super(key: key);
+  @override
+  _ArenaStatefulWidget createState() => _ArenaStatefulWidget();
+}
+
+class _ArenaStatefulWidget extends State<ArenaStatefulWidget> {
+  bool scheduleDay = false;
+  bool scheduleDefined = false;
+  DateTime initialDate = DateTime.now();
+  String schedule = "";
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +107,7 @@ class Arena extends StatelessWidget {
           arenaHeader(context, arena),
           arenaDescription(context, arena),
           arenaFacilities(context, arena),
+          arenaSchedule(context),
           arenaReviews(context, arena.reviews),
         ],
       ),
@@ -194,10 +219,8 @@ class Arena extends StatelessWidget {
             "Descripción",
             style: CustomTextTheme.h2(context),
           ),
-          Text(
-            arena.description,
-            style: CustomTextTheme.p200(context, CustomColors.secondaryDark),
-          )
+          Text(arena.description,
+              style: CustomTextTheme.p200(context, CustomColors.secondaryDark))
         ],
       ),
     );
@@ -314,5 +337,182 @@ class Arena extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget arenaSchedule(BuildContext context) {
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return Container(
+          margin: const EdgeInsets.only(top: 16.0),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              "Horarios",
+              style: CustomTextTheme.h2(context),
+            ),
+            Text(
+              "Seleccione el día y hora deseada para jugar.",
+              style: CustomTextTheme.p200(context, CustomColors.secondaryDark),
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 16.0),
+            ),
+            if (!scheduleDay && !scheduleDefined)
+              Container(
+                  decoration: BoxDecoration(
+                      color: CustomColors.secondaryLight,
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(8.0))),
+                  child: CalendarDatePicker(
+                      initialDate: initialDate,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(2023),
+                      onDateChanged: (value) {
+                        setState(() {
+                          scheduleDay = true;
+                          initialDate = value;
+                        });
+                      }))
+            else if (scheduleDay && !scheduleDefined)
+              Container(
+                  height: 400,
+                  child: SingleChildScrollView(
+                    child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          scheduleFree(
+                              context, "08:00 AM - 09:00 AM", 1, setState),
+                          scheduleFree(
+                              context, "10:00 AM - 11:00 AM", 2, setState),
+                          scheduleFree(
+                              context, "01:00 PM - 02:00 PM", 3, setState),
+                          scheduleFree(
+                              context, "06:00 PM - 07:00 PM", 4, setState),
+                          scheduleFree(
+                              context, "10:00 PM - 11:00 PM", 5, setState),
+                          TextButton(
+                              style: CustomButtonStyle.solidButton(context,
+                                  fullWidth: false, pd: 10),
+                              onPressed: () {
+                                setState(() {
+                                  scheduleDay = false;
+                                });
+                              },
+                              child: Text(
+                                "Atras",
+                                style: CustomTextTheme.p300(
+                                    context, CustomColors.secondaryWhite),
+                              ))
+                        ]),
+                  ))
+            else if (scheduleDefined)
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                      decoration: BoxDecoration(
+                          color: CustomColors.secondaryLight,
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(8.0))),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              initialDate.day.toString() +
+                                  "/" +
+                                  initialDate.month.toString() +
+                                  "/" +
+                                  initialDate.year.toString(),
+                              style: CustomTextTheme.h2(context),
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  schedule,
+                                  style: CustomTextTheme.h2(context),
+                                ),
+                                Text(
+                                  "Hora seleccionada",
+                                  style: CustomTextTheme.p200(
+                                      context, CustomColors.success),
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      )),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                          style: CustomButtonStyle.solidButton(context,
+                              fullWidth: false, pd: 10),
+                          onPressed: null,
+                          child: Text(
+                            "¡Listo!, reservar ahora",
+                            style: CustomTextTheme.p300(
+                                context, CustomColors.secondaryWhite),
+                          )),
+                      TextButton(
+                          style: CustomButtonStyle.outlinedButton(context,
+                              fullWidth: false, pd: 10),
+                          onPressed: () {
+                            setState(() {
+                              scheduleDefined = false;
+                              scheduleDay = true;
+                            });
+                          },
+                          child: Text(
+                            "Cambiar fecha",
+                            style: CustomTextTheme.p300(
+                                context, CustomColors.primary500),
+                          )),
+                    ],
+                  )
+                ],
+              )
+          ]));
+    });
+  }
+
+  Widget scheduleFree(
+      BuildContext context, String hour, int option, StateSetter setState) {
+    return InkWell(
+        onTap: () {
+          setState(() {
+            scheduleDefined = true;
+            schedule = hour;
+          });
+        },
+        child: Container(
+            width: double.infinity,
+            margin: const EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+                color: CustomColors.secondaryLight,
+                borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "Disponible",
+                      style: TextStyle(
+                        color: CustomColors.success,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      hour,
+                      style: CustomTextTheme.p300(
+                          context, CustomColors.secondaryDark),
+                    ),
+                  ]),
+            )));
   }
 }
