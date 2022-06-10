@@ -44,7 +44,7 @@ class Profile extends StatelessWidget {
         children: [
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/profile/edit');
+              Navigator.pushNamed(context, '/profile/information');
             },
             child: Container(
               padding: const EdgeInsets.all(10.0),
@@ -78,7 +78,7 @@ class Profile extends StatelessWidget {
           
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/profile/edit');
+              Navigator.pushNamed(context, '/profile/security');
             },
             child: Container(
               padding: const EdgeInsets.all(10.0),
@@ -112,7 +112,7 @@ class Profile extends StatelessWidget {
           
           InkWell(
             onTap: () {
-              Navigator.pushNamed(context, '/profile/edit');
+              Navigator.pushNamed(context, '/profile/payment');
             },
             child: Container(
               padding: const EdgeInsets.all(10.0),

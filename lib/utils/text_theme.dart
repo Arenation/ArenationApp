@@ -19,12 +19,14 @@ class CustomTextTheme {
         color: CustomColors.secondaryDark);
   }
 
-  static TextStyle p300(BuildContext context, Color color) {
+  static TextStyle p300(BuildContext context, Color color, {
+    FontWeight? weight = FontWeight.normal,
+  }) {
     return Theme.of(context).textTheme.headline4!.copyWith(
           fontFamily: 'Noto Sans',
           fontSize: 16,
           letterSpacing: .5,
-          fontWeight: FontWeight.normal,
+          fontWeight: weight,
           color: color,
         );
   }

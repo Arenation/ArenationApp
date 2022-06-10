@@ -15,6 +15,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../utils/button_style.dart';
 import '../utils/textfield_style.dart';
+import 'package:arenation_app/utils/components/btnNavigation.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -47,6 +48,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
+          bottomNavigationBar: const BottomNavigator(),
           backgroundColor: CustomColors.secondaryWhite,
           appBar: AppBar(
             automaticallyImplyLeading: false,
