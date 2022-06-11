@@ -1,4 +1,3 @@
-import 'package:arenation_app/services/http/users/getUser.dart';
 import 'package:arenation_app/utils/custom_colors.dart';
 import 'package:arenation_app/utils/text_theme.dart';
 import 'package:arenation_app/widgets/skeletons.dart';
@@ -14,8 +13,6 @@ import "package:intl/intl.dart";
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../utils/button_style.dart';
-import '../utils/textfield_style.dart';
-import 'package:arenation_app/utils/components/btnNavigation.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
@@ -48,7 +45,6 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
         child: Scaffold(
-          bottomNavigationBar: const BottomNavigator(),
           backgroundColor: CustomColors.secondaryWhite,
           appBar: AppBar(
             automaticallyImplyLeading: false,
@@ -73,7 +69,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                   child: IconButton(
-                      onPressed: () => Navigator.pushNamed(context, "/profile"),
+                      onPressed: null,
                       icon: Icon(
                         Icons.person_outline_rounded,
                         color: CustomColors.placeholderColor,
@@ -191,7 +187,9 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
                       : null,
                   builder:
                       (BuildContext context, AsyncSnapshot<Response> snapshot) {
-                    if (snapshot.hasData) {
+                    if (!snapshot.hasData) {
+                      return skeletonCardArena(mainContext);
+                    } else if (snapshot.hasData) {
                       data = snapshot.data!.getData as DataResponseArenas;
                       return Expanded(
                           child: data.data.isNotEmpty
@@ -213,8 +211,9 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
                                 ));
                     } else if (snapshot.hasError) {
                       return Text("${snapshot.error}");
+                    } else {
+                      return arenaEmptyResult(mainContext);
                     }
-                    return skeletonCardArena(mainContext);
                   },
                 )
               ],

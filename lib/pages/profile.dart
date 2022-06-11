@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:arenation_app/utils/custom_colors.dart';
 import '../services/http/arenas/getArenas.dart';
-import '../services/httpstate.dart';
-import '../utils/textfield_style.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import '../../utils/button_style.dart';
+import 'package:arenation_app/utils/text_theme.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -16,18 +17,33 @@ class Profile extends StatelessWidget {
         automaticallyImplyLeading: false,
         backgroundColor: CustomColors.secondaryWhite,
         elevation: 0,
+        // title: Text("Arenation", style: CustomTextTheme.h2(context),),
         titleSpacing: 0,
-        title:
-            Text("Cuenta", style: TextStyle(color: CustomColors.secondaryDark)),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: Icon(
-            Icons.chevron_left_outlined,
-            color: CustomColors.secondaryDark,
-          ),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 24.0),
+          child: SvgPicture.asset("assets/svg/logo.svg"),
         ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(
+              right: 24.0,
+              top: 5.0,
+              bottom: 5.0,
+            ),
+            child: Container(
+              decoration: BoxDecoration(
+                color: CustomColors.secondaryLight,
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: IconButton(
+                  onPressed: null,
+                  icon: Icon(
+                    Icons.person_outline_rounded,
+                    color: CustomColors.placeholderColor,
+                  )),
+            ),
+          )
+        ],
       ),
       body: Consumer<GetArenas>(
         builder: (_context, getArenas, child) {
@@ -42,6 +58,16 @@ class Profile extends StatelessWidget {
       padding: const EdgeInsets.all(30.0),
       child: Column(
         children: [
+          Text(
+            "Configuración de cuenta",
+            style: TextStyle(
+                color: CustomColors.secondaryDark,
+                fontSize: 30,
+                fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(
+            height: 30,
+          ),
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, '/profile/information');
@@ -75,7 +101,6 @@ class Profile extends StatelessWidget {
               ),
             ),
           ),
-          
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, '/profile/security');
@@ -109,7 +134,6 @@ class Profile extends StatelessWidget {
               ),
             ),
           ),
-          
           InkWell(
             onTap: () {
               Navigator.pushNamed(context, '/profile/payment');
@@ -143,7 +167,22 @@ class Profile extends StatelessWidget {
               ),
             ),
           ),
-          
+          Container(
+            margin: const EdgeInsets.only(top: 20),
+          ),
+          TextButton(
+            style: CustomButtonStyle.outlinedButton(context,
+                fullWidth: false, pd: 14),
+            onPressed: (){
+              /* arenas.logout(); */
+              Navigator.pushNamed(context, '/');
+            },
+            child: Text(
+              "Cerrar sesión",
+              style: CustomTextTheme.p300(context, CustomColors.primary500,
+                  weight: FontWeight.bold),
+            ),
+          )
         ],
       ),
     );

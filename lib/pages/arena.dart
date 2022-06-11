@@ -1,21 +1,19 @@
 // ignore_for_file: sized_box_for_whitespace
 
 import 'package:arenation_app/utils/functions/get_avg_score.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:arenation_app/utils/custom_colors.dart';
 import 'package:provider/provider.dart';
 import '../services/http/arenas/getArenas.dart';
 import '../models/response.dart';
 import 'package:arenation_app/widgets/skeletons.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:arenation_app/utils/text_theme.dart';
 import '../services/httpstate.dart';
 import '../models/arenas/modelArena.dart';
 import 'package:arenation_app/widgets/image_carousel.dart';
 import 'package:intl/intl.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import '../utils/button_style.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class Arena extends StatelessWidget {
   Arena({Key? key}) : super(key: key);
@@ -54,8 +52,6 @@ class _ArenaStatefulWidget extends State<ArenaStatefulWidget> {
         title: const Text("Arena"),
         leading: IconButton(
           onPressed: () {
-            Provider.of<GetArenas>(context, listen: false)
-                .setStateOne(StateHttp.loading);
             Navigator.pop(context);
           },
           icon: Icon(
@@ -77,10 +73,7 @@ class _ArenaStatefulWidget extends State<ArenaStatefulWidget> {
       padding: const EdgeInsets.symmetric(horizontal: 24),
       child: Column(children: [
         FutureBuilder<Response>(
-          future: arenas.state == StateHttp.loading &&
-                  arenas.state != StateHttp.success
-              ? arenas.getArena()
-              : null,
+          future: arenas.state == StateHttp.loading ? arenas.getArena() : null,
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return selectedArenaSkeleton(bodyContext);
@@ -449,9 +442,20 @@ class _ArenaStatefulWidget extends State<ArenaStatefulWidget> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       TextButton(
+                          onPressed: () {
+                            showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0)),
+                                    child: arenaPayed(context),
+                                  );
+                                });
+                          },
                           style: CustomButtonStyle.solidButton(context,
                               fullWidth: false, pd: 10),
-                          onPressed: null,
                           child: Text(
                             "¡Listo!, reservar ahora",
                             style: CustomTextTheme.p300(
@@ -514,5 +518,46 @@ class _ArenaStatefulWidget extends State<ArenaStatefulWidget> {
                     ),
                   ]),
             )));
+  }
+
+  Widget arenaPayed(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(10.0),
+        height: 420,
+        decoration: BoxDecoration(
+            color: CustomColors.secondaryLight,
+            borderRadius: const BorderRadius.all(Radius.circular(8.0))),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
+          SvgPicture.asset(
+            "assets/svg/Payed.svg",
+            height: 200,
+          ),
+          Text(
+            "Reserva realizada",
+            style: CustomTextTheme.h1(context),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 16.0),
+          ),
+          Text(
+            "¡Tu reserva se completó correctamente. En la bandeja de tu correo encontrarás la información de la reserva. Disfruta tu juego!",
+            textAlign: TextAlign.center,
+            style: CustomTextTheme.p300(context, CustomColors.secondaryDark),
+          ),
+          Container(
+            margin: const EdgeInsets.only(top: 16.0),
+          ),
+          TextButton(
+              onPressed: (){
+                Provider.of<GetArenas>(context, listen: false).setStateOne(StateHttp.loading);
+                Navigator.pushNamed(context, "/home");
+              },
+              style: CustomButtonStyle.solidButton(context, pd: 16),
+              child: Text(
+                "Entedido",
+                style:
+                    CustomTextTheme.p300(context, CustomColors.secondaryWhite, weight: FontWeight.bold),
+              )),
+        ]));
   }
 }

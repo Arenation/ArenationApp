@@ -10,12 +10,22 @@ import '../services/http/users/getUser.dart';
 import '../services/http/users/httpstate.dart';
 import '../../models/users/modelUser.dart';
 
-class Register extends StatelessWidget {
+class Register extends StatefulWidget {
+  @override
+  State<Register> createState() => _RegisterState();
+}
+
+class _RegisterState extends State<Register> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final CheckEmail checkEmail = CheckEmail();
-  DateTime date = DateTime.now();
+
+  DateTime date = DateTime(2001, 1, 28);
+
   Map<String, String> data = {};
+
   String state = "";
+
   String message = "";
 
   @override
@@ -92,17 +102,42 @@ class Register extends StatelessWidget {
                                 const BorderRadius.all(Radius.circular(8.0))),
                         margin: const EdgeInsets.only(bottom: 10),
                         child: TextFormField(
+                          controller: TextEditingController(
+                              text: date.toString().substring(0, 10)),
+                          readOnly: true,
+                          onTap: () {
+                            showDatePicker(
+                                    builder: (context, child) {
+                                      return Theme(
+                                        data: ThemeData.dark(),
+                                        child: child!,
+                                      );
+                                    },
+                                    keyboardType: TextInputType.datetime,
+                                    helpText:
+                                        "Seleccione la fecha de nacimiento",
+                                    cancelText: "Cancelar",
+                                    confirmText: "Aceptar",
+                                    context: context,
+                                    initialDate: date,
+                                    firstDate: DateTime(1900),
+                                    lastDate: DateTime(2006, 12, 31))
+                                .then((DateTime? value) {
+                              if (value != null) {
+                                setState(() {
+                                  date = value;
+                                });
+                              }
+                            });
+                          },
                           decoration:
                               CustomTextFieldDecoration.textFieldDecoration(
-                                  context,
-                                  "Fecha de nacimiento",
-                                  "AAAA-MM-DD"),
+                                  context, "AAAA-MM-DD", "Fecha de nacimiento"),
                           validator: (String? value) {
                             if (value == null || value.isEmpty) {
                               return '*Debe llenar este campo';
                             }
-                            data["date"] =
-                                "${date.year}-${date.month}-${date.day}";
+                            data["date"] = date.toString().substring(10);
                             return null;
                           },
                         ),
@@ -186,9 +221,10 @@ class Register extends StatelessWidget {
                         },
                         style: CustomButtonStyle.outlinedButton(context,
                             fullWidth: true),
-                        child: Text(StateHttpUser.loading == serviceUser.state
-                            ? "Registrando..."
-                            : "Registrar",
+                        child: Text(
+                          StateHttpUser.loading == serviceUser.state
+                              ? "Registrando..."
+                              : "Registrar",
                           textAlign: TextAlign.left,
                           style: CustomTextTheme.buttonText(
                               context, CustomColors.primary500),
@@ -212,7 +248,7 @@ class Register extends StatelessWidget {
     }));
   }
 
-  Widget registerOK(BuildContext context){
+  Widget registerOK(BuildContext context) {
     return Scaffold(
       body: Center(
         child: Column(
@@ -234,8 +270,7 @@ class Register extends StatelessWidget {
               onPressed: () {
                 Navigator.pushNamed(context, '/');
               },
-              style: CustomButtonStyle.outlinedButton(context,
-                  fullWidth: true),
+              style: CustomButtonStyle.outlinedButton(context, fullWidth: true),
               child: Text(
                 "Iniciar sesión",
                 textAlign: TextAlign.left,
@@ -249,7 +284,7 @@ class Register extends StatelessWidget {
     );
   }
 
-  Widget emailDialog(BuildContext context){
+  Widget emailDialog(BuildContext context) {
     return AlertDialog(
       title: Text("Correo electrónico"),
       content: Text("El correo electrónico ya está registrado"),

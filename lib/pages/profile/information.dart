@@ -80,7 +80,7 @@ class _InformationStatefulWidgetState extends State<InformationStatefulWidget> {
               borderRadius: const BorderRadius.all(Radius.circular(8.0))),
           margin: const EdgeInsets.only(top: 10, bottom: 10),
           child: TextFormField(
-            initialValue: "Faber Alberto",
+            initialValue: "Arenation App",
             decoration: CustomTextFieldDecoration.textFieldDecoration(
                 context, "Nombres", "Nombres"),
             validator: (String? value) {
@@ -98,7 +98,7 @@ class _InformationStatefulWidgetState extends State<InformationStatefulWidget> {
               borderRadius: const BorderRadius.all(Radius.circular(8.0))),
           margin: const EdgeInsets.only(bottom: 10),
           child: TextFormField(
-            initialValue: "Hoyos Ordosgoitia",
+            initialValue: "Arenation App",
             decoration: CustomTextFieldDecoration.textFieldDecoration(
                 context, "Apellidos", "Apellidos"),
             validator: (String? value) {

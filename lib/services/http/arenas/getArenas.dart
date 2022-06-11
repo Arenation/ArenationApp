@@ -13,13 +13,9 @@ import './arenaSelected.dart';
 class GetArenas extends HttpBase {
   ArenaSelected arenaSelected = ArenaSelected();
   HttpStateArena stateArena = HttpStateArena();
-
-  GetArenas() {
-    setState(StateHttp.init);
-    setStateOne(StateHttp.init);
-    stateArena.setStateArena(StateHttpArena.init);
+  GetArenas(){
+    setStateOne(StateHttp.loading);
   }
-
   @override
   Future<Response> getArenas(Map<String, String> data) async {
     http.Client _client = http.Client();
@@ -32,7 +28,6 @@ class GetArenas extends HttpBase {
               },
               body: jsonEncode(data))
           .timeout(onTimeLimit());
-          print(_response.body);
 
       final Response _decodeResponse = decodeResponse(_response);
 
@@ -74,16 +69,13 @@ class GetArenas extends HttpBase {
     switch (response.statusCode) {
       case 200:
         setStateOne(StateHttp.success);
-        stateArena.setStateArena(StateHttpArena.success);
         return Response<DataResponseArenas>(
             DataResponseArenas.fromJson(json.decode(response.body)));
       case 404:
         setStateOne(StateHttp.error);
-        stateArena.setStateArena(StateHttpArena.error);
         return Response<Errors>(Errors.fromJson(json.decode(response.body)));
       default:
         setStateOne(StateHttp.error);
-        stateArena.setStateArena(StateHttpArena.error);
         return Response<String>("500 Internal Server Error");
     }
   }

@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:arenation_app/utils/custom_colors.dart';
+import 'package:provider/provider.dart';
+import '../../services/http/arenas/getArenas.dart';
+import '../../services/httpstate.dart';
 
 class BottomNavigator extends StatefulWidget {
-  const BottomNavigator({Key? key}) : super(key: key);
+  final Function CurrentIndex;
+  BottomNavigator({Key? key, required this.CurrentIndex}) : super(key: key);
 
   @override
   _BottomNavigatorState createState() => _BottomNavigatorState();
@@ -28,14 +32,18 @@ class _BottomNavigatorState extends State<BottomNavigator> {
           label: 'Inicio',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
-          label: 'Favoritos',
+          icon: Icon(Icons.person),
+          label: 'Mi Cuenta',
         ),
       ],
       onTap: (index) {
         setState(() {
           _currentIndex = index;
+          widget.CurrentIndex(index);
         });
+        if (index == 1){
+          Provider.of<GetArenas>(context, listen: false).setStateOne(StateHttp.loading);
+        }
       },
     );
   }

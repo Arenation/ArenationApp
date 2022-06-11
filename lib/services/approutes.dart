@@ -7,6 +7,8 @@ import '../pages/profile.dart';
 import '../pages/profile/information.dart';
 import '../pages/profile/security.dart';
 import '../pages/profile/payment.dart';
+import '../pages/events.dart';
+import '../pages/principal.dart';
 
 class AppRoutes {
   Map<String, WidgetBuilder>? _routes;
@@ -18,13 +20,14 @@ class AppRoutes {
   void createRoutes() {
     _routes = {
       '/': (context) => Login(),
-      "/home": (context) => Home(),
+      "/home": (context) => Principal(),
       '/register': (context) => Register(),
       '/arena': (context) => Arena(),
       '/profile': (context) => const Profile(),
       '/profile/information': (context) => const Information(),
       '/profile/security': (context) => const Security(),
       '/profile/payment': (context) => const Payment(),
+      '/events': (context) => Events(),
     };
   }
 
