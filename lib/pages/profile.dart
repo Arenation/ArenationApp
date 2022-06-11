@@ -5,6 +5,7 @@ import '../services/http/arenas/getArenas.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import '../../utils/button_style.dart';
 import 'package:arenation_app/utils/text_theme.dart';
+import '../services/httpstate.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
@@ -175,6 +176,7 @@ class Profile extends StatelessWidget {
                 fullWidth: false, pd: 14),
             onPressed: (){
               /* arenas.logout(); */
+              Provider.of<GetArenas>(context, listen: false).setStateOne(StateHttp.loading);
               Navigator.pushNamed(context, '/');
             },
             child: Text(
